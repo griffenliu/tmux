@@ -1,29 +1,29 @@
 # 摘要
 tmux	[-2Cluv] [-c shell-command] [-f file] [-L socket-name] [-S socket-path] [command [flags]]
 # 描述
-tmux可以在一个屏幕中创建多个session，window，pane等，可以从一个屏幕中分离并继续在后台运行，以后可以重新连接。
-当tmux启动，将会城建一个新的session和一个独立的window。
-底部状态行显示当前session的信息并且可以用来输入交互命令。
-一个session是一个独立的tmux管理的伪终端集合。
-每个session可以有一个或者多个window连接。
-一个window占据整个屏幕并且可以分割成多个矩形pane，每个pane是一个独立的伪终端。
-任意数量的tmux实例可以连接都同一个session，任意数量的window可以显示同一个session。
-一旦所有sessions被杀死，tmux将会退出。
-如果意外断开（例如ssh连接超时），或者使用命令'C-b d'分离，session将会被保存。tmux可以使用下面的命令重新连接session：
-$ tmux attach
-在tmux中，session通过client端显示在屏幕中，所有的session通过一个独立的server进行管理。
-server和每个client都是独立的进程，它们使用/tmp中的socket进行通讯。
-下面是tmux的参数项：
--2 强制tmux使用256色
--C 使用控制模式启动（参考CONTROL MODE章节). 使用(-CC)禁用echo.
--c shell-command 执行shell命令使用默认的shell。如果需要，tmux服务会开始重新检索default-shell选项。这个选项是为了当tmux用来作为登录shell时兼容sh(1)。
--f file 指定配置文件。默认情况，tmux从/etc/tmux加载系统配置文件，然后寻找~/.tmux.conf用户配置文件。tmux在server进程启动时加载配置一次。source-file命令可以用来加载配置文件。tmux在第一个创建的session的命令行中显示配置文件的错误信息，并继续加载其他配置。
--L socket-name tmux server的套接字存储在目录TMUX_TMPDIR下面，如果未设置，则默认设置在/tmp目录下面。默认的套接字名称为default。这个参数允许指定套接字名称，允许运行多个独立的tmux server。除非指定-S参数，否则不需要完整的路径：创建的套接字都在相同的目录中。如果套接字意外丢失，SIGUSR1信号将会发送给tmux server进程并重新创建套接字（注意：如果父目录丢失，该操作将会失败）。
--l Behave as a login shell. This flag currently has no effect and is for compatibility with other shells when using tmux as a login shell.
--S socket-path 指定server套接字的完整路径。如果指定-S参数，将不会使用默认的套接字目录，并忽略-L参数。
--u tmux通过检测LC_ALL,LC_TYPE和LANG环境变量的第一个设置是否为"UTF-8"来尝试猜测终端是否有可能支持UTF-8。这并部总是正确的：-u标志明确告知tmux，支持utf-8。如果server从一个指定-u参数的client启动，utf8和status-utf8选项在session和window中被全局启用。
--v 要求详细的日志记录。这个参数可以通过指定多次来增加详细度。日志消息保存在当前目录的tmux-client-PID.log和tmux-server-PID.log文件中。
-command [flags] 制定一组命令用来控制tmux，如下面章节所属。如果未指定任何命令，默认使用new-session命令。
+ * tmux可以在一个屏幕中创建多个session，window，pane等，可以从一个屏幕中分离并继续在后台运行，以后可以重新连接。
+ * 当tmux启动，将会城建一个新的session和一个独立的window。
+ * 底部状态行显示当前session的信息并且可以用来输入交互命令。
+ * 一个session是一个独立的tmux管理的伪终端集合。
+ * 每个session可以有一个或者多个window连接。
+ * 一个window占据整个屏幕并且可以分割成多个矩形pane，每个pane是一个独立的伪终端。
+ * 任意数量的tmux实例可以连接都同一个session，任意数量的window可以显示同一个session。
+ * 一旦所有sessions被杀死，tmux将会退出。
+ * 如果意外断开（例如ssh连接超时），或者使用命令'C-b d'分离，session将会被保存。tmux可以使用下面的命令重新连接session：
+`` $ tmux attach ``
+ * 在tmux中，session通过client端显示在屏幕中，所有的session通过一个独立的server进行管理。
+ * server和每个client都是独立的进程，它们使用/tmp中的socket进行通讯。
+ * 下面是tmux的参数项：
+  * -2 强制tmux使用256色
+  * -C 使用控制模式启动（参考CONTROL MODE章节). 使用(-CC)禁用echo.
+  * -c shell-command 执行shell命令使用默认的shell。如果需要，tmux服务会开始重新检索default-shell选项。这个选项是为了当tmux用来作为登录shell时兼容sh(1)。
+  * -f file 指定配置文件。默认情况，tmux从/etc/tmux加载系统配置文件，然后寻找~/.tmux.conf用户配置文件。tmux在server进程启动时加载配置一次。source-file命令可以用来加载配置文件。tmux在第一个创建的session的命令行中显示配置文件的错误信息，并继续加载其他配置。
+  * -L socket-name tmux server的套接字存储在目录TMUX_TMPDIR下面，如果未设置，则默认设置在/tmp目录下面。默认的套接字名称为default。这个参数允许指定套接字名称，允许运行多个独立的tmux server。除非指定-S参数，否则不需要完整的路径：创建的套接字都在相同的目录中。如果套接字意外丢失，SIGUSR1信号将会发送给tmux server进程并重新创建套接字（注意：如果父目录丢失，该操作将会失败）。
+  * -l Behave as a login shell. This flag currently has no effect and is for compatibility with other shells when using tmux as a login shell.
+  * -S socket-path 指定server套接字的完整路径。如果指定-S参数，将不会使用默认的套接字目录，并忽略-L参数。
+  * -u tmux通过检测LC_ALL,LC_TYPE和LANG环境变量的第一个设置是否为"UTF-8"来尝试猜测终端是否有可能支持UTF-8。这并部总是正确的：-u标志明确告知tmux，支持utf-8。如果server从一个指定-u参数的client启动，utf8和status-utf8选项在session和window中被全局启用。
+  * -v 要求详细的日志记录。这个参数可以通过指定多次来增加详细度。日志消息保存在当前目录的tmux-client-PID.log和tmux-server-PID.log文件中。
+  * command [flags] 制定一组命令用来控制tmux，如下面章节所属。如果未指定任何命令，默认使用new-session命令。
 # 按键绑定
 默认的按键绑定:
 ^分类^按键^描述^替换方案^
