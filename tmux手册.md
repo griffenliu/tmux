@@ -10,9 +10,7 @@ tmux	[-2Cluv] [-c shell-command] [-f file] [-L socket-name] [-S socket-path] [co
  * 任意数量的tmux实例可以连接都同一个session，任意数量的window可以显示同一个session。
  * 一旦所有sessions被杀死，tmux将会退出。
  * 如果意外断开（例如ssh连接超时），或者使用命令'C-b d'分离，session将会被保存。tmux可以使用下面的命令重新连接session：
-
-   `` $ tmux attach ``
-
+ :`` $ tmux attach ``
  * 在tmux中，session通过client端显示在屏幕中，所有的session通过一个独立的server进行管理。
  * server和每个client都是独立的进程，它们使用/tmp中的socket进行通讯。
  * 下面是tmux的参数项：
@@ -89,55 +87,61 @@ tmux	[-2Cluv] [-c shell-command] [-f file] [-L socket-name] [-S socket-path] [co
 键盘绑定可以通过bind-key和undind-key命令进行改变。
 
 # 命令
-This section contains a list of the commands supported by tmux. Most commands accept the optional -t (and sometimes -s) argument with one of target-client, target-session target-window, or target-pane. These specify the client, session, window or pane which a command should affect.
-target-client should be the name of the pty(4) file to which the client is connected, for example either of /dev/ttyp1 or ttyp1 for the client attached to /dev/ttyp1. If no client is specified, tmux attempts to work out the client currently in use; if that fails, an error is reported. Clients may be listed with the list-clients command.
-target-session is tried as, in order:
-A session ID prefixed with a $.
-An exact name of a session (as listed by the list-sessions command).
-The start of a session name, for example ‘mysess’ would match a session named ‘mysession’.
-An fnmatch(3) pattern which is matched against the session name.
-If the session name is prefixed with an ‘=’, only an exact match is accepted (so ‘=mysess’ will only match exactly ‘mysess’, not ‘mysession’).
-If a single session is found, it is used as the target session; multiple matches produce an error. If a session is omitted, the current session is used if available; if no current session is available, the most recently used is chosen.
-target-window specifies a window in the form session:window. session follows the same rules as for target-session, and window is looked for in order as:
-A special token, listed below.
-A window index, for example ‘mysession:1’ is window 1 in session ‘mysession’.
-A window ID, such as @1.
-An exact window name, such as ‘mysession:mywindow’.
-The start of a window name, such as ‘mysession:mywin’.
-As an fnmatch(3) pattern matched against the window name.
-Like sessions, a ‘=’ prefix will do an exact match only. An empty window name specifies the next unused index if appropriate (for example the new-window and link-window commands) otherwise the current window in session is chosen.
-The following special tokens are available to indicate particular windows. Each has a single-character alternative form.
-Token		Meaning
-{start}	^	The lowest-numbered window
-{end}	$	The highest-numbered window
-{last}	!	The last (previously current) window
-{next}	+	The next window by number
-{previous}	-	The previous window by number
-target-pane may be a pane ID or takes a similar form to target-window but with the optional addition of a period followed by a pane index or pane ID, for example: ‘mysession:mywindow.1’. If the pane index is omitted, the currently active pane in the specified window is used. The following special tokens are available for the pane index:
-Token		Meaning
-{last}	!	The last (previously active) pane
-{next}	+	The next pane by number
-{previous}	-	The previous pane by number
-{top}		The top pane
-{bottom}		The bottom pane
-{left}		The leftmost pane
-{right}		The rightmost pane
-{top-left}		The top-left pane
-{top-right}		The top-right pane
-{bottom-left}		The bottom-left pane
-{bottom-right}		The bottom-right pane
-{up-of}		The pane above the active pane
-{down-of}		The pane below the active pane
-{left-of}		The pane to the left of the active pane
-{right-of}		The pane to the right of the active pane
-The tokens ‘+’ and ‘-’ may be followed by an offset, for example:
-select-window -t:+2
+本章包含tmux支持的命令列表。
+大多数命令接受可选的参数-t(有时是-s) <target-client/target-session/target-window/target-pane>。这些参数指定了命令应该影响哪个cleint,session,window或者pane。
+* target-client应该是客户端连接的pty(4)文件名称，例如：/dev/ttyp1或者ttyp1。如果没有制定客户端，tmux尝试计算出当前使用的客户端；如果失败，将会报告一个错误。客户端可以使用命令list-clients列出。
+* target-session按照下面的顺序进行尝试：
+  1. 前缀是$的session ID。
+  2. session的确切名称（使用list-session命令列出）
+  3. session名称的开始字符串，例如“mesess”将匹配到名称为“mysession”的session。
+  4. An fnmatch(3) pattern which is matched against the session name.
+  5. 如果session名称的前缀是'='，则表示使用精确匹配模式（“=mysess”只能匹配出“mysess”，而不能匹配到“mysession”）
+  6. 如果只发现一个session，则使用目标session；如果匹配到多个，则引发一个错误。如果session被遗漏，将使用当前有效session；如果没有当前有效session，则选择最近使用的session。
+* target-window 使用session:window的形式制定window。window按照下面的顺序查找：
+  1. 制定的token，在下面列出。
+  2. 一个window索引，例如：“mysession:1”指代“mysession”中的window 1
+  3. window ID，例如@1
+  4. 精确匹配的window名称，例如“mysession:mywindow”。
+  5. 使用起始字符串模糊匹配，例如：“mysession:mywin”
+  6. As an fnmatch(3) pattern matched against the window name.
+  7. 就像session一样，使用'='前缀进行精确匹配。空的window名称指定下一个合适的未使用索引（例如：new-window和link-window命令）否则使用当前window。
+  
+下面指定的tokens表示特殊的window。
+|Token|Meaning|
+|{start} ^|序号最小的window|
+|{end} $|序号最大的window|
+|{last} !|上一个window（相对于当前window的前面）|
+|{next +|指定数字的下一个window|
+|{previous} -|指定数字的前一个window|
+
+* target-pane 可能是一个pane ID或者和target-window类似的形式但是可以选择使用句号家伙是那个pane索引或者ID，例如“myession:mywindow.1”。如果省略了pane索引，则使用指定window当前激活的pane。下面是一些可以用作pane索引的特殊token：
+|Token		|Meaning|
+|{last}	!	|The last (previously active) pane|
+|{next}	+	|The next pane by number|
+|{previous}-	|The previous pane by number|
+|{top}		|The top pane|
+|{bottom}	|The bottom pane|
+|{left}		|The leftmost pane|
+|{right}	|The rightmost pane|
+|{top-left}	|The top-left pane|
+|{top-right}	|The top-right pane|
+|{bottom-left}	|The bottom-left pane|
+|{bottom-right}	|The bottom-right pane|
+|{up-of}	|The pane above the active pane|
+|{down-of}	|The pane below the active pane|
+|{left-of}	|The pane to the left of the active pane|
+|{right-of}	|he pane to the right of the active pane|
+‘+’和‘-’ token可以使用下标，例如：select-window -t:+2
+
+
 In addition, target-session, target-window or target-pane may consist entirely of the token ‘{mouse}’ (alternative form ‘=’) to specify the most recent mouse event (see the MOUSE SUPPORT section) or ‘{marked}’ (alternative form ‘~’) to specify the marked pane (see select-pane -m).
-Sessions, window and panes are each numbered with a unique ID; session IDs are prefixed with a ‘$’, windows with a ‘@’, and panes with a ‘%’. These are unique and are unchanged for the life of the session, window or pane in the tmux server. The pane ID is passed to the child process of the pane in the TMUX_PANE environment variable. IDs may be displayed using the ‘session_id’, ‘window_id’, or ‘pane_id’ formats (see the FORMATS section) and the display-message, list-sessions, list-windows or list-panes commands.
+Sessions,window和pane每个编号有一个唯一的ID；session的ID使用"$"作为前缀，window使用"@"前缀，pane是使用"%"前缀。这些ID是tmux server中的session，window或者pane的生命周期中唯一且不可改变的。pane的ID传递给在TMUX_PANE环境变量中定义的pane的子进程。ID使用"session_id","window_id","pane_id"格式显示（参见 格式 章节），使用命令display-message,list-sessions,list-windows,list-panes查询列表。
+
 shell-command arguments are sh(1) commands. This may be a single argument passed to the shell, for example:
 new-window 'vi /etc/passwd'
 Will run:
 /bin/sh -c 'vi /etc/passwd'
+
 Additionally, the new-window, new-session, split-window, respawn-window and respawn-pane commands allow shell-command to be given as multiple arguments and executed directly (without ‘sh -c’). This can avoid issues with shell quoting. For example:
 $ tmux new-window vi /etc/passwd
 Will run vi(1) directly without invoking the shell.
@@ -233,58 +237,59 @@ If -E is used, update-environment option will not be applied.
 bind-key -Ttable2 c list-keys 
 bind-key -Ttable1 b switch-client -Ttable2 
 bind-key -Troot   a switch-client -Ttable1
-WINDOWS AND PANES
+
+# WINDOWS AND PANES
 A tmux window may be in one of several modes. The default permits direct access to the terminal attached to the window. The other is copy mode, which permits a section of a window or its history to be copied to a paste buffer for later insertion into another window. This mode is entered with the copy-mode command, bound to ‘[’ by default. It is also entered when a command that produces output, such as list-keys, is executed from a key binding.
 The keys available depend on whether emacs or vi mode is selected (see the mode-keys option). The following keys are supported as appropriate for the mode:
-Function	vi	emacs
-Append selection	A	
-Back to indentation	^	M-m
-Bottom of history	G	M-<
-Clear selection	Escape	C-g
-Copy selection	Enter	M-w
-Copy to named buffer	"	
-Cursor down	j	Down
-Cursor left	h	Left
-Cursor right	l	Right
-Cursor to bottom line	L	
-Cursor to middle line	M	M-r
-Cursor to top line	H	M-R
-Cursor up	k	Up
-Delete entire line	d	C-u
-Delete/Copy to end of line	D	C-k
-End of line	$	C-e
-Go to line	:	g
-Half page down	C-d	M-Down
-Half page up	C-u	M-Up
-Jump again	;	;
-Jump again in reverse	,	,
-Jump backward	F	F
-Jump forward	f	f
-Jump to backward	T	
-Jump to forward	t	
-Next page	C-f	Page down
-Next space	W	
-Next space, end of word	E	
-Next word	w	
-Next word end	e	M-f
-Other end of selection	o	
-Paste buffer	p	C-y
-Previous page	C-b	Page up
-Previous space	B	
-Previous word	b	M-b
-Quit mode	q	Escape
-Rectangle toggle	v	R
-Scroll down	C-Down or C-e	C-Down
-Scroll up	C-Up or C-y	C-Up
-Search again	n	n
-Search again in reverse	N	N
-Search backward	?	C-r
-Search forward	/	C-s
-Select line	V	
-Start of line	0	C-a
-Start selection	Space	C-Space
-Top of history	g	M->
-Transpose characters		C-t
+|Function	|vi	|emacs|
+|Append |selection|	A	|
+|Back to indentation|	^|	M-m|
+|Bottom of history|	G|	M-<|
+|Clear selection|	Escape|	C-g|
+|Copy selection	|Enter	|M-w|
+|Copy to |named buffer|	"|	
+|Cursor down|	j|	Down|
+|Cursor left|	h|	Left|
+|Cursor right|	l|	Right|
+|Cursor to bottom| line|	L|	
+|Cursor to middle |line	M|	M-r|
+|Cursor to top| line	H|	M-R|
+|Cursor up	|k|	Up|
+|Delete entire line|	d|	C-u|
+|Delete/Copy to end of line|	D|	C-k|
+|End of line	|$|	C-e|
+|Go to line|	:|	g|
+|Half page down|	C-d|	M-Down|
+|Half page up	|C-u|	M-Up|
+|Jump again|	;|	;|
+|Jump again in reverse|	,|	,|
+|Jump backward	|F|	F|
+|Jump forward|	f|	f|
+|Jump to |backward|	T	|
+|Jump to |forward|	t	|
+|Next page	|C-f|	Page down|
+|Next space|	W|	|
+|Next space, end of word|	E||	
+|Next word|	w|	|
+|Next word end|	e|	M-f|
+|Other end of selection	|o|	|
+|Paste buffer|	p	|C-y|
+|Previous page|	C-b|	Page up|
+|Previous space||	B|	
+|Previous word|	b|	M-b|
+|Quit mode|	q	|Escape|
+|Rectangle toggle|	v|	R|
+||Scroll down|	C-Down or C-e	|C-Down|
+|Scroll up|	C-Up or C-y|	C-Up|
+|Search again|	n|	n|
+|Search again in reverse|	N|	N|
+|Search backward	|?|C-r|
+|Search forward	|/|	C-s|
+|Select line	|V|	
+|Start of line|	0|	C-a|
+|Start selection|	|Space|	C-Space|
+|Top of history	|g|	M->|
+|Transpose characters|	|	C-t|
 The next and previous word keys use space and the ‘-’, ‘_’ and ‘@’ characters as word delimiters by default, but this can be adjusted by setting the word-separators session option. Next word moves to the start of the next word, next word end to the end of the next word and previous word to the start of the previous word. The three next and previous space keys work similarly but use a space alone as the word separator.
 The jump commands enable quick movement within a line. For instance, typing ‘f’ followed by ‘/’ will move the cursor to the next ‘/’ character on the current line. A ‘;’ will then jump to the next occurrence.
 Commands in copy mode may be prefaced by an optional repeat count. With vi key bindings, a prefix is entered using the number keys; with emacs, the Alt (meta) key and a number begins prefix entry. For example, to move the cursor forward by ten words, use ‘M-1 0 M-f’ in emacs mode, and ‘10w’ in vi.
@@ -337,98 +342,100 @@ If -S is given will display the specified format instead of the default session 
 This command works only if at least one client is attached.
 choose-window [-F format] [-t target-window] [template]
 Put a window into window choice mode, where a window may be chosen interactively from a list. After a window is selected, ‘%%’ is replaced by the session name and window index in template and the result executed as a command. If template is not given, "select-window -t '%%'" is used. For the meaning of the -F flag, see the FORMATS section. This command works only if at least one client is attached.
-display-panes [-t target-client]
+
+
+* display-panes [-t target-client]
 (alias: displayp)
 Display a visible indicator of each pane shown by target-client. See the display-panes-time, display-panes-colour, and display-panes-active-colour session options. While the indicator is on screen, a pane may be selected with the ‘0’ to ‘9’ keys.
-find-window [-CNT] [-F format] [-t target-window] match-string
+* find-window [-CNT] [-F format] [-t target-window] match-string
 (alias: findw)
 Search for the fnmatch(3) pattern match-string in window names, titles, and visible content (but not history). The flags control matching behavior: -C matches only visible window contents, -N matches only the window name and -T matches only the window title. The default is -CNT. If only one window is matched, it'll be automatically selected, otherwise a choice list is shown. For the meaning of the -F flag, see the FORMATS section. This command works only if at least one client is attached.
-join-pane [-bdhv] [-l size | -p percentage] [-s src-pane] [-t dst-pane]
+* join-pane [-bdhv] [-l size | -p percentage] [-s src-pane] [-t dst-pane]
 (alias: joinp)
 Like split-window, but instead of splitting dst-pane and creating a new pane, split it and move src-pane into the space. This can be used to reverse break-pane. The -b option causes src-pane to be joined to left of or above dst-pane.
 If -s is omitted and a marked pane is present (see select-pane -m), the marked pane is used rather than the current pane.
-kill-pane [-a] [-t target-pane]
+* kill-pane [-a] [-t target-pane]
 (alias: killp)
 Destroy the given pane. If no panes remain in the containing window, it is also destroyed. The -a option kills all but the pane given with -t.
-kill-window [-a] [-t target-window]
+* kill-window [-a] [-t target-window]
 (alias: killw)
 Kill the current window or the window at target-window, removing it from any sessions to which it is linked. The -a option kills all but the window given with -t.
-last-pane [-de] [-t target-window]
+* last-pane [-de] [-t target-window]
 (alias: lastp)
 Select the last (previously selected) pane. -e enables or -d disables input to the pane.
-last-window [-t target-session]
+* last-window [-t target-session]
 (alias: last)
 Select the last (previously selected) window. If no target-session is specified, select the last window of the current session.
-link-window [-adk] [-s src-window] [-t dst-window]
+* link-window [-adk] [-s src-window] [-t dst-window]
 (alias: linkw)
 Link the window at src-window to the specified dst-window. If dst-window is specified and no such window exists, the src-window is linked there. With -a, the window is moved to the next index up (following windows are moved if necessary). If -k is given and dst-window exists, it is killed, otherwise an error is generated. If -d is given, the newly linked window is not selected.
-list-panes [-as] [-F format] [-t target]
+* list-panes [-as] [-F format] [-t target]
 (alias: lsp)
 If -a is given, target is ignored and all panes on the server are listed. If -s is given, target is a session (or the current session). If neither is given, target is a window (or the current window). For the meaning of the -F flag, see the FORMATS section.
-list-windows [-a] [-F format] [-t target-session]
+* list-windows [-a] [-F format] [-t target-session]
 (alias: lsw)
 If -a is given, list all windows on the server. Otherwise, list windows in the current session or in target-session. For the meaning of the -F flag, see the FORMATS section.
-move-pane [-bdhv] [-l size | -p percentage] [-s src-pane] [-t dst-pane]
+* move-pane [-bdhv] [-l size | -p percentage] [-s src-pane] [-t dst-pane]
 (alias: movep)
 Like join-pane, but src-pane and dst-pane may belong to the same window.
-move-window [-ardk] [-s src-window] [-t dst-window]
+* move-window [-ardk] [-s src-window] [-t dst-window]
 (alias: movew)
 This is similar to link-window, except the window at src-window is moved to dst-window. With -r, all windows in the session are renumbered in sequential order, respecting the base-index option.
-new-window [-adkP] [-c start-directory] [-F format] [-n window-name] [-t target-window] [shell-command]
+* new-window [-adkP] [-c start-directory] [-F format] [-n window-name] [-t target-window] [shell-command]
 (alias: neww)
 Create a new window. With -a, the new window is inserted at the next index up from the specified target-window, moving windows up if necessary, otherwise target-window is the new window location.
 If -d is given, the session does not make the new window the current window. target-window represents the window to be created; if the target already exists an error is shown, unless the -k flag is used, in which case it is destroyed. shell-command is the command to execute. If shell-command is not specified, the value of the default-command option is used. -c specifies the working directory in which the new window is created.
 When the shell command completes, the window closes. See the remain-on-exit option to change this behaviour.
 The TERM environment variable must be set to “screen” for all programs running inside tmux. New windows will automatically have “TERM=screen” added to their environment, but care must be taken not to reset this in shell start-up files.
 The -P option prints information about the new window after it has been created. By default, it uses the format ‘#{session_name}:#{window_index}’ but a different format may be specified with -F.
-next-layout [-t target-window]
+* next-layout [-t target-window]
 (alias: nextl)
 Move a window to the next layout and rearrange the panes to fit.
-next-window [-a] [-t target-session]
+* next-window [-a] [-t target-session]
 (alias: next)
 Move to the next window in the session. If -a is used, move to the next window with an alert.
-pipe-pane [-o] [-t target-pane] [shell-command]
+* pipe-pane [-o] [-t target-pane] [shell-command]
 (alias: pipep)
 Pipe any output sent by the program in target-pane to a shell command. A pane may only be piped to one command at a time, any existing pipe is closed before shell-command is executed. The shell-command string may contain the special character sequences supported by the status-left option. If no shell-command is given, the current pipe (if any) is closed.
 The -o option only opens a new pipe if no previous pipe exists, allowing a pipe to be toggled with a single key, for example:
 bind-key C-p pipe-pane -o 'cat >>~/output.#I-#P'
-previous-layout [-t target-window]
+* previous-layout [-t target-window]
 (alias: prevl)
 Move to the previous layout in the session.
-previous-window [-a] [-t target-session]
+* previous-window [-a] [-t target-session]
 (alias: prev)
 Move to the previous window in the session. With -a, move to the previous window with an alert.
-rename-window [-t target-window] new-name
+* rename-window [-t target-window] new-name
 (alias: renamew)
 Rename the current window, or the window at target-window if specified, to new-name.
-resize-pane [-DLMRUZ] [-t target-pane] [-x width] [-y height] [adjustment]
+* resize-pane [-DLMRUZ] [-t target-pane] [-x width] [-y height] [adjustment]
 (alias: resizep)
 Resize a pane, up, down, left or right by adjustment with -U, -D, -L or -R, or to an absolute size with -x or -y. The adjustment is given in lines or cells (the default is 1).
 With -Z, the active pane is toggled between zoomed (occupying the whole of the window) and unzoomed (its normal position in the layout).
 -M begins mouse resizing (only valid if bound to a mouse key binding, see MOUSE SUPPORT).
-respawn-pane [-k] [-t target-pane] [shell-command]
+* respawn-pane [-k] [-t target-pane] [shell-command]
 (alias: respawnp)
 Reactivate a pane in which the command has exited (see the remain-on-exit window option). If shell-command is not given, the command used when the pane was created is executed. The pane must be already inactive, unless -k is given, in which case any existing command is killed.
-respawn-window [-k] [-t target-window] [shell-command]
+* respawn-window [-k] [-t target-window] [shell-command]
 (alias: respawnw)
 Reactivate a window in which the command has exited (see the remain-on-exit window option). If shell-command is not given, the command used when the window was created is executed. The window must be already inactive, unless -k is given, in which case any existing command is killed.
-rotate-window [-DU] [-t target-window]
+* rotate-window [-DU] [-t target-window]
 (alias: rotatew)
 Rotate the positions of the panes within a window, either upward (numerically lower) with -U or downward (numerically higher).
-select-layout [-nop] [-t target-window] [layout-name]
+* select-layout [-nop] [-t target-window] [layout-name]
 (alias: selectl)
 Choose a specific layout for a window. If layout-name is not given, the last preset layout used (if any) is reapplied. -n and -p are equivalent to the next-layout and previous-layout commands. -o applies the last set layout if possible (undoes the most recent layout change).
-select-pane [-DdegLlMmRU] [-P style] [-t target-pane]
+* select-pane [-DdegLlMmRU] [-P style] [-t target-pane]
 (alias: selectp)
 Make pane target-pane the active pane in window target-window, or set its style (with -P). If one of -D, -L, -R, or -U is used, respectively the pane below, to the left, to the right, or above the target pane is used. -l is the same as using the last-pane command. -e enables or -d disables input to the pane.
 -m and -M are used to set and clear the marked pane. There is one marked pane at a time, setting a new marked pane clears the last. The marked pane is the default target for -s to join-pane, swap-pane and swap-window.
 Each pane has a style: by default the window-style and window-active-style options are used, select-pane -P sets the style for a single pane. For example, to set the pane 1 background to red:
 select-pane -t:.1 -P 'bg=red'
 -g shows the current pane style.
-select-window [-lnpT] [-t target-window]
+* select-window [-lnpT] [-t target-window]
 (alias: selectw)
 Select the window at target-window. -l, -n and -p are equivalent to the last-window, next-window and previous-window commands. If -T is given and the selected window is already the current window, the command behaves like last-window.
-split-window [-bdhvP] [-c start-directory] [-l size | -p percentage] [-t target-pane] [shell-command] [-F format]
+* split-window [-bdhvP] [-c start-directory] [-l size | -p percentage] [-t target-pane] [shell-command] [-F format]
 (alias: splitw)
 Create a new pane by splitting target-pane: -h does a horizontal split and -v a vertical split; if neither is specified, -v is assumed. The -l and -p options specify the size of the new pane in lines (for vertical split) or in cells (for horizontal split), or as a percentage, respectively. The -b option causes the new pane to be created to the left of or above target-pane. All other options have the same meaning as for the new-window command.
 swap-pane [-dDU] [-s src-pane] [-t dst-pane]
