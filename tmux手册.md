@@ -73,7 +73,7 @@ tmux	[-2Cluv] [-c shell-command] [-f file] [-L socket-name] [-S socket-path] [co
 ||t|显示时间||  
 ||w|交互式的选择当前window|| 
 ||x|杀死当前pane||  
-||z||切换当前pane的缩放状态|  
+||z|切换当前pane的缩放状态||  
 ||{|交换当前pane和前一个pane||  
 ||}|交换当前pane和下一个pane||
 ||~|Show previous messages from tmux, if any.||
