@@ -38,76 +38,57 @@ tmux	[-2Cluv] [-c shell-command] [-f file] [-L socket-name] [-S socket-path] [co
 ||C-z|挂起tmux客户端 ||
 ||!|Break the current pane out of the window. ||
 ||"|将当前pane纵向分割为上下2个 ||
-|||||
-|||||
-|||||
-|||||
-# 列出所有粘贴buffers.
-$ 重命名当前session
-% 将当前pane横向分割为左右2个
-& 上司当前window
-' 切换window，命令行输入模式
-( Switch the attached client to the previous session.
-) Switch the attached client to the next session.
-, 重命名当前window
-- 删除最近靠背的文本buffer
-. 重设当前window的索引（相当于重新排序的功能？）
-0 to 9 根据选择的索引切换window
-: 进入tmux命令行提示
-; 移动到前一个激活的pane
-= 交互式从列表中选择粘贴哪一个buffer
-? 显示所有的键盘绑定
-D 选择一个客户端分离
-L Switch the attached client back to the last session.
-[ 进入拷贝模式考本文本或者显示历史
-] 粘贴最近靠背的文本buffer
-c 创建新window
-d 分离当前客户端
-f 在打开的window中提示搜索文本
-i 显示当前window的一些信息
-l 移动到上一次选择的window
-n 切换下一个window
-o 选择当前窗口的下一个pane
-p 切换到前一个window
-q 短暂显示面板索引
-r 强制重绘连接的client
-m 标记当前pane(参见select-pane -m)
-M 清除标记的pane
-s 交互式为已连接的客户端选择一个新的会话
-t 显示时间
-w 交互式的选择当前window
-x 杀死当前pane
-z
-Toggle zoom state of the current pane.
-{
-Swap the current pane with the previous pane.
-}
-Swap the current pane with the next pane.
-~
-Show previous messages from tmux, if any.
-Page Up
-Enter copy mode and scroll one page up.
-Up, Down
-Left, Right
-Change to the pane above, below, to the left, or to the right of the current pane.
-M-1 to M-5
-Arrange panes in one of the five preset layouts: even-horizontal, even-vertical, main-horizontal, main-vertical, or tiled.
-Space
-Arrange the current window in the next preset layout.
-M-n
-Move to the next window with a bell or activity marker.
-M-o
-Rotate the panes in the current window backwards.
-M-p
-Move to the previous window with a bell or activity marker.
-C-Up, C-Down
-C-Left, C-Right
-Resize the current pane in steps of one cell.
-M-Up, M-Down
-M-Left, M-Right
-Resize the current pane in steps of five cells.
-Key bindings may be changed with the bind-key and unbind-key commands.
-COMMANDS
+||#|列出所有粘贴buffers||
+||$|重命名当前session||
+||%|将当前pane横向分割为左右2个||
+||&|杀死当前window||
+||'|切换window，命令行输入模式||
+||(|Switch the attached client to the previous session.||
+||)|Switch the attached client to the next session.||
+||,|重命名当前window|| 
+||-|删除最近靠背的文本buffer|| 
+||.|重设当前window的索引（相当于重新排序的功能？）||
+||0 to 9|根据选择的索引切换window|| 
+||:|进入tmux命令行提示||
+||;|移动到前一个激活的pane||
+||=|交互式从列表中选择粘贴哪一个buffer||
+||?|显示所有的键盘绑定||
+|||选择一个客户端分离|| 
+||L|Switch the attached client back to the last session.|| 
+||[|进入拷贝模式考本文本或者显示历史|| 
+||]|粘贴最近靠背的文本buffer|| 
+||c|创建新window|| 
+||d|分离当前客户端|| 
+||f|在打开的window中提示搜索文本||  
+||i|显示当前window的一些信息||  
+||l|移动到上一次选择的window||  
+||n|切换下一个window||  
+||o|选择当前窗口的下一个pane||  
+||p|切换到前一个window|| 
+||q| 短暂显示面板索引|| 
+||r|强制重绘连接的client|| 
+||m|标记当前pane(参见select-pane -m)|| 
+||M|清除标记的pane|| 
+||s|交互式为已连接的客户端选择一个新的会话|| 
+||t|显示时间||  
+||w|交互式的选择当前window|| 
+||x|杀死当前pane||  
+||z||切换当前pane的缩放状态|  
+||{|交换当前pane和前一个pane||  
+||}|交换当前pane和下一个pane||
+||~|Show previous messages from tmux, if any.||
+||Page Up|进入靠背模式并向上滚动一页||
+||Up, Down Left, Right|Change to the pane above, below, to the left, or to the right of the current pane.||
+||M-1 to M-5|Arrange panes in one of the five preset layouts: even-horizontal, even-vertical, main-horizontal, main-vertical,or tiled.Space Arrange the current window in the next preset layout.||
+||M-n|移动到下一个window，响铃或激活标记||
+||M-o|Rotate the panes in the current window backwards.||
+||M-p|Move to the previous window with a bell or activity marker.||
+||C-Up, C-Down C-Left, C-Right|Resize the current pane in steps of one cell.||
+||M-Up, M-Down M-Left, M-Right|Resize the current pane in steps of five cells.||
+
+键盘绑定可以通过bind-key和undind-key命令进行改变。
+
+# 命令
 This section contains a list of the commands supported by tmux. Most commands accept the optional -t (and sometimes -s) argument with one of target-client, target-session target-window, or target-pane. These specify the client, session, window or pane which a command should affect.
 target-client should be the name of the pty(4) file to which the client is connected, for example either of /dev/ttyp1 or ttyp1 for the client attached to /dev/ttyp1. If no client is specified, tmux attempts to work out the client currently in use; if that fails, an error is reported. Clients may be listed with the list-clients command.
 target-session is tried as, in order:
