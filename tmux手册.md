@@ -107,6 +107,7 @@ tmux	[-2Cluv] [-c shell-command] [-f file] [-L socket-name] [-S socket-path] [co
   7. 就像session一样，使用'='前缀进行精确匹配。空的window名称指定下一个合适的未使用索引（例如：new-window和link-window命令）否则使用当前window。
   
 下面指定的tokens表示特殊的window。
+
 |Token|Meaning|
 | ------------- |:-----|
 |{start} ^|序号最小的window|
@@ -116,6 +117,7 @@ tmux	[-2Cluv] [-c shell-command] [-f file] [-L socket-name] [-S socket-path] [co
 |{previous} -|指定数字的前一个window|
 
 * target-pane 可能是一个pane ID或者和target-window类似的形式但是可以选择使用句号家伙是那个pane索引或者ID，例如“myession:mywindow.1”。如果省略了pane索引，则使用指定window当前激活的pane。下面是一些可以用作pane索引的特殊token：
+
 |Token		|Meaning|
 | ------------- |:-----|
 |{last}	!	|The last (previously active) pane|
@@ -133,6 +135,7 @@ tmux	[-2Cluv] [-c shell-command] [-f file] [-L socket-name] [-S socket-path] [co
 |{down-of}	|The pane below the active pane|
 |{left-of}	|The pane to the left of the active pane|
 |{right-of}	|he pane to the right of the active pane|
+
 ‘+’和‘-’ token可以使用下标，例如：select-window -t:+2
 
 
@@ -243,6 +246,7 @@ bind-key -Troot   a switch-client -Ttable1
 # WINDOWS AND PANES
 A tmux window may be in one of several modes. The default permits direct access to the terminal attached to the window. The other is copy mode, which permits a section of a window or its history to be copied to a paste buffer for later insertion into another window. This mode is entered with the copy-mode command, bound to ‘[’ by default. It is also entered when a command that produces output, such as list-keys, is executed from a key binding.
 The keys available depend on whether emacs or vi mode is selected (see the mode-keys option). The following keys are supported as appropriate for the mode:
+
 |Function	|vi	|emacs|
 |:------------- |:-----|:-----|
 |Append |selection|	A	|
@@ -293,6 +297,7 @@ The keys available depend on whether emacs or vi mode is selected (see the mode-
 |Start selection|	|Space|	C-Space|
 |Top of history	|g|	M->|
 |Transpose characters|	|	C-t|
+
 The next and previous word keys use space and the ‘-’, ‘_’ and ‘@’ characters as word delimiters by default, but this can be adjusted by setting the word-separators session option. Next word moves to the start of the next word, next word end to the end of the next word and previous word to the start of the previous word. The three next and previous space keys work similarly but use a space alone as the word separator.
 The jump commands enable quick movement within a line. For instance, typing ‘f’ followed by ‘/’ will move the cursor to the next ‘/’ character on the current line. A ‘;’ will then jump to the next occurrence.
 Commands in copy mode may be prefaced by an optional repeat count. With vi key bindings, a prefix is entered using the number keys; with emacs, the Alt (meta) key and a number begins prefix entry. For example, to move the cursor forward by ten words, use ‘M-1 0 M-f’ in emacs mode, and ‘10w’ in vi.
