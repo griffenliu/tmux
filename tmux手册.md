@@ -30,7 +30,7 @@ tmux	[-2Cluv] [-c shell-command] [-f file] [-L socket-name] [-S socket-path] [co
 默认的按键绑定:
 
 |分类|按键|描述|替换方案|
-| ------------- |:-------------:|:-------------:| -----:|
+| ------------- |:-------------|:-------------|:-----|
 ||C-b|命令按键前缀 ||
 ||C-o|将当前窗口向前移动 ||
 ||C-z|挂起tmux客户端 ||
@@ -108,6 +108,7 @@ tmux	[-2Cluv] [-c shell-command] [-f file] [-L socket-name] [-S socket-path] [co
   
 下面指定的tokens表示特殊的window。
 |Token|Meaning|
+| ------------- |:-----|
 |{start} ^|序号最小的window|
 |{end} $|序号最大的window|
 |{last} !|上一个window（相对于当前window的前面）|
@@ -116,6 +117,7 @@ tmux	[-2Cluv] [-c shell-command] [-f file] [-L socket-name] [-S socket-path] [co
 
 * target-pane 可能是一个pane ID或者和target-window类似的形式但是可以选择使用句号家伙是那个pane索引或者ID，例如“myession:mywindow.1”。如果省略了pane索引，则使用指定window当前激活的pane。下面是一些可以用作pane索引的特殊token：
 |Token		|Meaning|
+| ------------- |:-----|
 |{last}	!	|The last (previously active) pane|
 |{next}	+	|The next pane by number|
 |{previous}-	|The previous pane by number|
@@ -242,6 +244,7 @@ bind-key -Troot   a switch-client -Ttable1
 A tmux window may be in one of several modes. The default permits direct access to the terminal attached to the window. The other is copy mode, which permits a section of a window or its history to be copied to a paste buffer for later insertion into another window. This mode is entered with the copy-mode command, bound to ‘[’ by default. It is also entered when a command that produces output, such as list-keys, is executed from a key binding.
 The keys available depend on whether emacs or vi mode is selected (see the mode-keys option). The following keys are supported as appropriate for the mode:
 |Function	|vi	|emacs|
+|:------------- |:-----|:-----|
 |Append |selection|	A	|
 |Back to indentation|	^|	M-m|
 |Bottom of history|	G|	M-<|
