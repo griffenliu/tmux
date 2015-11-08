@@ -10,7 +10,9 @@ tmux	[-2Cluv] [-c shell-command] [-f file] [-L socket-name] [-S socket-path] [co
  * 任意数量的tmux实例可以连接都同一个session，任意数量的window可以显示同一个session。
  * 一旦所有sessions被杀死，tmux将会退出。
  * 如果意外断开（例如ssh连接超时），或者使用命令'C-b d'分离，session将会被保存。tmux可以使用下面的命令重新连接session：
+
    `` $ tmux attach ``
+
  * 在tmux中，session通过client端显示在屏幕中，所有的session通过一个独立的server进行管理。
  * server和每个client都是独立的进程，它们使用/tmp中的socket进行通讯。
  * 下面是tmux的参数项：
@@ -31,16 +33,15 @@ tmux	[-2Cluv] [-c shell-command] [-f file] [-L socket-name] [-S socket-path] [co
 
 |分类|按键|描述|替换方案|
 | ------------- |:-------------:|:-------------:| -----:|
+||C-b|命令按键前缀 ||
+||C-o|将当前窗口向前移动 ||
+||C-z|挂起tmux客户端 ||
+||!|Break the current pane out of the window. ||
+||"|将当前pane纵向分割为上下2个 ||
 |||||
 |||||
 |||||
 |||||
-|||||
-C-b 命令按键前缀
-C-o 将当前窗口向前移动.
-C-z 挂起tmux客户端
-! Break the current pane out of the window.
-" 将当前pane纵向分割为上下2个
 # 列出所有粘贴buffers.
 $ 重命名当前session
 % 将当前pane横向分割为左右2个
