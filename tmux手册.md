@@ -10,7 +10,7 @@ tmux	[-2Cluv] [-c shell-command] [-f file] [-L socket-name] [-S socket-path] [co
  * 任意数量的tmux实例可以连接都同一个session，任意数量的window可以显示同一个session。
  * 一旦所有sessions被杀死，tmux将会退出。
  * 如果意外断开（例如ssh连接超时），或者使用命令'C-b d'分离，session将会被保存。tmux可以使用下面的命令重新连接session：
-`` $ tmux attach ``
+   `` $ tmux attach ``
  * 在tmux中，session通过client端显示在屏幕中，所有的session通过一个独立的server进行管理。
  * server和每个client都是独立的进程，它们使用/tmp中的socket进行通讯。
  * 下面是tmux的参数项：
@@ -24,10 +24,18 @@ tmux	[-2Cluv] [-c shell-command] [-f file] [-L socket-name] [-S socket-path] [co
   * -u tmux通过检测LC_ALL,LC_TYPE和LANG环境变量的第一个设置是否为"UTF-8"来尝试猜测终端是否有可能支持UTF-8。这并部总是正确的：-u标志明确告知tmux，支持utf-8。如果server从一个指定-u参数的client启动，utf8和status-utf8选项在session和window中被全局启用。
   * -v 要求详细的日志记录。这个参数可以通过指定多次来增加详细度。日志消息保存在当前目录的tmux-client-PID.log和tmux-server-PID.log文件中。
   * command [flags] 制定一组命令用来控制tmux，如下面章节所属。如果未指定任何命令，默认使用new-session命令。
-# 按键绑定
-默认的按键绑定:
-^分类^按键^描述^替换方案^
 
+# 按键绑定
+
+默认的按键绑定:
+
+|分类|按键|描述|替换方案|
+| ------------- |:-------------:|:-------------:| -----:|
+|||||
+|||||
+|||||
+|||||
+|||||
 C-b 命令按键前缀
 C-o 将当前窗口向前移动.
 C-z 挂起tmux客户端
