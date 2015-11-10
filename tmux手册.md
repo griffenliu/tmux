@@ -139,4 +139,4 @@ tmux	[-2Cluv] [-c shell-command] [-f file] [-L socket-name] [-S socket-path] [co
 
 ‘+’和‘-’ token可以使用下标，例如：select-window -t:+2  
   
-详情参考：[[http://www.openbsd.org/cgi-bin/man.cgi/OpenBSD-current/man1/tmux.1?query=tmux&sec=1|tmux man]]
+详情参考[tmux man](http://www.openbsd.org/cgi-bin/man.cgi/OpenBSD-current/man1/tmux.1?query=tmux&sec=1 "tmux man")
